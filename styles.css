@@ -1,0 +1,9 @@
+body {
+    background-color: aqua;
+    font-family: sans-serif;
+}
+
+.message {
+    background-color: rgb(187, 96, 114);
+    max-width: 600px;
+}
