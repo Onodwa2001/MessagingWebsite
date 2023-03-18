@@ -159,7 +159,7 @@
         }
 
         .chat-wrap h3 {
-            background-color: rgb(187, 96, 114);
+            background-color: #3b71ca;
             color: white;
             padding: 10px;
         }
@@ -202,7 +202,7 @@
 <body onload="refreshChat();">
     
 
-    <p style="text-align: center;"><a href="users.php">Back</a></p>
+    <p style="text-align: center; background-color: #3b71ca; width: fit-content; margin: 10px auto 10px auto; padding: 10px;"><a href="users.php" style="color: white; text-decoration: none">Back</a></p>
     <div class="chat-wrap">
         <h3><?php echo $receiver; ?></h3>
         <div id="chat_space" class="chat_space">
