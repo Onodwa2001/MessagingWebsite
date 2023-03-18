@@ -143,7 +143,8 @@
         }
 
         .Me {
-            background-color: rgb(156, 238, 209);
+            color: white;
+            background-color: #3b71ca;
             margin-left: auto;
             margin-right: right;
         }
