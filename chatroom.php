@@ -129,6 +129,10 @@
             /* color: white; */
         }
 
+        .messages::-webkit-scrollbar {
+            display: none;
+        }
+
         .message p {
             font-size: 14px;
         }
@@ -198,6 +202,7 @@
 <body onload="refreshChat();">
     
 
+    <p style="text-align: center;"><a href="users.php">Back</a></p>
     <div class="chat-wrap">
         <h3><?php echo $receiver; ?></h3>
         <div id="chat_space" class="chat_space">

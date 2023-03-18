@@ -80,6 +80,55 @@
 </head>
 <body>
 
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Container wrapper -->
+        <div class="container">
+            <!-- Navbar brand -->
+            <a class="navbar-brand me-2" href="https://mdbgo.com/">
+            <i class="fa-solid fa-message"></i>
+            </a>
+
+            <!-- Toggle button -->
+            <button
+            class="navbar-toggler"
+            type="button"
+            data-mdb-toggle="collapse"
+            data-mdb-target="#navbarButtonsExample"
+            aria-controls="navbarButtonsExample"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            >
+            <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarButtonsExample">
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <!-- <a class="nav-link" href="#">Dashboard</a> -->
+                </li>
+            </ul>
+            <!-- Left links -->
+
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-link px-3 me-2" id="login">
+                Login
+                </button>
+                <button type="button" class="btn btn-primary me-3" id="signup">
+                Sign up
+                </button>
+                
+            </div>
+            </div>
+            <!-- Collapsible wrapper -->
+        </div>
+        <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+
+    <br/>
     <h1>Find someone to talk to</h1>
     
     <div class="users-wrap">
@@ -102,6 +151,15 @@
         </div>
     </div>
     
+    <script>
+        document.getElementById('login').addEventListener('click', (e) => {
+            location.href="index.php";
+        });
+
+        document.getElementById('signup').addEventListener('click', (e) => {
+            location.href="register.php";
+        });
+    </script>
 
 </body>
 </html>
