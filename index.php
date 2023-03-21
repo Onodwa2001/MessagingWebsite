@@ -4,10 +4,27 @@
 
     include('./connect.php');
 
+    /**
+     * Checks if user exists in the database based on input values
+     * 
+     * @param string $username
+     * @param string $password
+     * 
+     * @return array associative array with 1 value which is the user that logged in
+     * 
+     */
     function check_exist_in_db($username, $password) {
         global $connection;
 
-        $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+        // encryption module
+        include('./encryption.php');
+        $encrypted_input = encrypt($password);
+
+        // prevent SQL injection by sanitizing input values
+        $safe_username = mysqli_real_escape_string($connection, $username);
+        $safe_password = mysqli_real_escape_string($connection, $encrypted_input);
+
+        $sql = "SELECT * FROM users WHERE username='$safe_username' AND password='$safe_password'";
         $result = mysqli_query($connection, $sql);
 
         if (mysqli_num_rows($result) > 0) {
@@ -20,6 +37,15 @@
         return null;
     }
 
+
+    /**
+     * logs a user in
+     * 
+     * @param string $username
+     * 
+     * @return void
+     * 
+     */
     function login_user($username) {
         if (isset($_POST['username'])) {
             $username = $_POST['username'];

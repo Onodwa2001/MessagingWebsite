@@ -9,38 +9,18 @@
 
     if (isset($_GET['id'])) $receiver = $_GET['id']; // this value will vary depending on who the sender clicks on
 
-    class Chat {
-        
-    }
-
-    function encryptMessage($text) {
-        $sSalt = '20adeb83e85f03cfc84d0fb7e5f4d290';
-        $sSalt = substr(hash('sha256', $sSalt, true), 0, 32);
-        $method = 'aes-256-cbc';
-    
-        $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
-    
-        $encrypted = base64_encode(openssl_encrypt($text, $method, $sSalt, OPENSSL_RAW_DATA, $iv));
-        return $encrypted;
-    }
-
-    function decryptMessage($text) {
-        $sSalt = '20adeb83e85f03cfc84d0fb7e5f4d290';
-        $sSalt = substr(hash('sha256', $sSalt, true), 0, 32);
-        $method = 'aes-256-cbc';
-    
-        $iv = chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0) . chr(0x0);
-    
-        $decrypted = openssl_decrypt(base64_decode($text), $method, $sSalt, OPENSSL_RAW_DATA, $iv);
-        return $decrypted;
-    }
+    // encryption module
+    include('./encryption.php');
 
     /**
-     * $sender -> sender username
-     * $receiver -> receiver username
-     * $message -> message being sent
-     * 
      * adding the records to the database
+     * 
+     * @param string $sender -> sender username
+     * @param string $receiver -> receiver username
+     * @param string $message -> message being sent
+     * 
+     * @return void
+     * 
      */
     function addMessageToDatabase($sender, $receiver, $message) {
         // Convert special characters to HTML entities so it can be successfully added to database
@@ -48,7 +28,7 @@
         $sender = htmlspecialchars($sender);
         $receiver = htmlspecialchars($receiver);
 
-        $hashed_message = encryptMessage($message);
+        $hashed_message = encrypt($message);
 
         $sqlquery = "INSERT INTO conversation(message, sender_id, receiver_id) VALUES ('$hashed_message', '$sender', '$receiver')";
 
@@ -64,6 +44,9 @@
     /**
      * getting the arguments and passing them to the addMessageToDatabase function 
      * under the condition that the message has be written and submitted
+     * 
+     * @return void
+     * 
      */
     function sendMessage() {
         $sender = $_SESSION['username'];
@@ -91,7 +74,7 @@
             $messages = array();
 
             while($row = mysqli_fetch_assoc($result)) {
-                array_push($messages, array('sender_id' => $row["sender_id"], 'receiver_id' => $row['receiver_id'], 'message' => decryptMessage(($row["message"])), 'timestamp' => $row['time']));
+                array_push($messages, array('sender_id' => $row["sender_id"], 'receiver_id' => $row['receiver_id'], 'message' => decrypt(($row["message"])), 'timestamp' => $row['time']));
             }
 
             return $messages;

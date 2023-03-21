@@ -8,11 +8,14 @@
     if (isset($_GET['id'])) $receiver = $_GET['id']; // this value will vary depending on who the sender clicks on
 
     /**
-     * $sender -> sender username
-     * $receiver -> receiver username
-     * $message -> message being sent
-     * 
      * adding the records to the database
+     * 
+     * @param string $sender -> sender username
+     * @param string $receiver -> receiver username
+     * @param string $message -> message being sent
+     * 
+     * @return void
+     * 
      */
     function addMessageToDatabase($sender, $receiver, $message) {
         $sqlquery = "INSERT INTO conversation(message, sender_id, receiver_id) VALUES ('$message', '$sender', '$receiver')";
@@ -27,6 +30,9 @@
     /**
      * getting the arguments and passing them to the addMessageToDatabase function 
      * under the condition that the message has be written and submitted
+     * 
+     * @return void
+     * 
      */
     function sendMessage() {
         $sender = $_SESSION['username'];

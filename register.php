@@ -5,11 +5,18 @@
     $error = '';
 
     /**
-     * $username -> primary key of user
-     * $name -> optional name
+     * @param string $username -> primary key of user
+     * @param string $name -> optional name
+     * 
+     * @return error
      */
     function add_user_to_database($username, $name, $password) {
-        $sqlquery = "INSERT INTO users VALUES ('$username', '$name', '$password')";
+
+        // encryption module
+        include('./encryption.php');
+        $encrypted_password = encrypt($password);
+
+        $sqlquery = "INSERT INTO users VALUES ('$username', '$name', '$encrypted_password')";
  
         global $connection;
 
