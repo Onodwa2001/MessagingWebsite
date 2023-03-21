@@ -4,6 +4,8 @@
 
     include('./connect.php');
 
+    $error = '';
+
     /**
      * Checks if user exists in the database based on input values
      * 
@@ -14,7 +16,7 @@
      * 
      */
     function check_exist_in_db($username, $password) {
-        global $connection;
+        global $connection, $error;
 
         // encryption module
         include('./encryption.php');
@@ -27,14 +29,18 @@
         $sql = "SELECT * FROM users WHERE username='$safe_username' AND password='$safe_password'";
         $result = mysqli_query($connection, $sql);
 
-        if (mysqli_num_rows($result) > 0) {
-            while($row = mysqli_fetch_assoc($result)) {
-                return array('username' => $row["username"], 'name' => $row['name']);
+        try {
+            if (mysqli_num_rows($result) > 0) {
+                while($row = mysqli_fetch_assoc($result)) {
+                    return array('username' => $row["username"], 'name' => $row['name']);
+                }
             }
-        } else {
-            echo "Error: ";
+        } catch (Exception $e) {
+            // $error = '<p style="color: red; text-align: center;">Incorrect details entered</p>';    
         }
+
         return null;
+
     }
 
 
@@ -47,20 +53,26 @@
      * 
      */
     function login_user($username) {
+        global $error;
+
         if (isset($_POST['username'])) {
             $username = $_POST['username'];
             $password = $_POST['password'];
 
-            // returns credentials of user
-            $creds = check_exist_in_db($username, $password);
-
-            if (!$creds) {
-                echo 'This user does not exist';
+            if (empty($username) || empty($password)) {
+                $error = '<p style="color: red; text-align: center;">Please enter missing details</p>';
             } else {
-                $_SESSION['username'] = $creds['username'];
-                $_SESSION['name'] = $creds['name'];
+                // returns credentials of user
+                $creds = check_exist_in_db($username, $password);
 
-                header('Location: users.php');
+                if (!$creds) {
+                    $error = '<p style="color: red; text-align: center;">This user does not exist</p>';
+                } else {
+                    $_SESSION['username'] = $creds['username'];
+                    $_SESSION['name'] = $creds['name'];
+
+                    header('Location: users.php');
+                }
             }
             
         }
@@ -100,6 +112,9 @@
 <body>
 
     <h1>Sign in to your account</h1>
+    
+    <?php echo $error; ?>
+
     <div class="form-wrapper">
         <form action="" method="POST">
             <div class="form-group">

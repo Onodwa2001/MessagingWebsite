@@ -33,8 +33,10 @@
     }
 
     /**
-     * $username -> primary key of user
-     * $name -> optional name
+     * @param string $username -> primary key of user
+     * @param string $name -> optional name
+     * 
+     * @return void
      */
     function register_user($username, $name) {
         if (isset($_POST['username']) && isset($_POST['name']) && isset($_POST['password'])) {
