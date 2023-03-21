@@ -24,7 +24,34 @@
         return null;
     }
 
+
+    function getAllUnreadMessages() {
+        global $connection;
+
+        $current_logged_in_user = $_SESSION['username'];
+
+        $sql = "SELECT * FROM unread_messages WHERE receiver_id='$current_logged_in_user'";
+        $result = mysqli_query($connection, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            $unread_messages = array();
+
+            while($row = mysqli_fetch_assoc($result)) {
+                array_push($unread_messages, array('message' => $row["message"], 'sender_id' => $row['sender_id'], 'receiver_id' => $row['receiver_id']));
+            }
+
+            return $unread_messages;
+        } else {
+            echo "";
+        }
+        return null;
+    }
+
     $users = getAllUsers();
+    $unread_messages = getAllUnreadMessages();
+
+    $hashTable = array();
+
 
 ?>
 
@@ -73,20 +100,30 @@
             margin: 0 auto 0 auto;
         }
 
+        .message_dot {
+            background-color: blue;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
         /* input {
             background-color: white !important;
         } */
     </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
+<body onload="refresh()">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <!-- Container wrapper -->
         <div class="container">
             <!-- Navbar brand -->
-            <a class="navbar-brand me-2" href="https://mdbgo.com/">
+            <a class="navbar-brand me-2" href="users.php">
             <i class="fa-solid fa-message"></i>
+            &nbsp&nbsp<span style="font-size: 15px;">Welcome <?php echo $_SESSION['username']; ?></span>
             </a>
 
             <!-- Toggle button -->
@@ -142,10 +179,17 @@
         <br/>
         <h5>Users available</h5>
         <br/>
-        <div class="users">
+        <div class="users" id="users">
             <?php foreach($users as $user) { ?>
                 <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
-                    <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p>
+                    <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp
+                    <?php if ($unread_messages != null) { ?>
+                        <?php foreach ($unread_messages as $message) { ?>
+                            <?php if ($message['sender_id'] === $user['username']) { ?>
+                                <?php echo '<span class="message_dot"></span>'; ?>
+                            <?php } ?>
+                        <?php } ?>
+                    <?php } ?>
                 </a>
             <?php } ?>
         </div>
@@ -159,7 +203,22 @@
         document.getElementById('signup').addEventListener('click', (e) => {
             location.href="register.php";
         });
+
+
+
+        
+        function refresh(){
+            $('#users').load(location.href + " #users");
+        }
+
+        setInterval(function(){
+            refresh();
+        }, 1000);
+
     </script>
+
+    <!-- MDB -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.2.0/mdb.min.js"></script>
 
 </body>
 </html>

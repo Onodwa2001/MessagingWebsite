@@ -36,7 +36,8 @@
                 }
             }
         } catch (Exception $e) {
-            // $error = '<p style="color: red; text-align: center;">Incorrect details entered</p>';    
+            // $error = '<p style="color: red; text-align: center;">Incorrect details entered</p>';  
+            echo 'Err: ';  
         }
 
         return null;

@@ -5,12 +5,59 @@
 
     require 'C:/xampp/php/vendor/autoload.php';
 
-    $receiver = '';
-
-    if (isset($_GET['id'])) $receiver = $_GET['id']; // this value will vary depending on who the sender clicks on
-
     // encryption module
     include('./encryption.php');
+
+    $receiver = '';
+
+    function getAllUnreadMessages() {
+        global $connection, $unread_messages;
+
+        $current_logged_in_user = $_SESSION['username'];
+
+        $sql = "SELECT * FROM unread_messages WHERE receiver_id='$current_logged_in_user'";
+        $result = mysqli_query($connection, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            $unread_messages = array();
+
+            while($row = mysqli_fetch_assoc($result)) {
+                array_push($unread_messages, array('id' => $row['id'], 'message' => $row["message"], 'sender_id' => $row['sender_id'], 'receiver_id' => $row['receiver_id']));
+            }
+
+            return $unread_messages;
+        } else {
+            echo "No users yet, start a conversation";
+        }
+        return null;
+    }
+
+    if (isset($_GET['id'])) {
+        $receiver = $_GET['id']; // this value will vary depending on who the sender clicks on
+
+        $unread_messages = getAllUnreadMessages();
+
+
+        if ($unread_messages != null) {
+            foreach ($unread_messages as $message) {
+                if ($_SESSION['username'] === $message['receiver_id'] && $_GET['id'] === $message['sender_id']) {
+                    // delete this message from unread_messages database
+                    $id = $message['id'];
+
+                    $sqlquery = "DELETE FROM unread_messages WHERE id = '$id'";
+
+                    global $connection;
+
+                    if (mysqli_query($connection, $sqlquery)) {
+                        // successfully deleted
+                    } else {
+                        echo "Error: " . $sqlquery . "<br>" . mysqli_error($connection);
+                    }
+                }
+            }
+        }
+        
+    }
 
     /**
      * adding the records to the database
@@ -22,7 +69,7 @@
      * @return void
      * 
      */
-    function addMessageToDatabase($sender, $receiver, $message) {
+    function addMessageToConversationTable($sender, $receiver, $message) {
         // Convert special characters to HTML entities so it can be successfully added to database
         $message = htmlspecialchars($message);
         $sender = htmlspecialchars($sender);
@@ -41,8 +88,27 @@
         }
     }
 
+    function addMessageToUnreadMessagesTable($sender, $receiver, $message) {
+        // Convert special characters to HTML entities so it can be successfully added to database
+        $message = htmlspecialchars($message);
+        $sender = htmlspecialchars($sender);
+        $receiver = htmlspecialchars($receiver);
+
+        $hashed_message = encrypt($message);
+
+        $sqlquery = "INSERT INTO unread_messages(message, sender_id, receiver_id) VALUES ('$hashed_message', '$sender', '$receiver')";
+
+        global $connection;
+
+        if (mysqli_query($connection, $sqlquery)) {
+            // success - might add something here later
+        } else {
+            echo "Error: " . $sqlquery . "<br>" . mysqli_error($connection);
+        }
+    }
+
     /**
-     * getting the arguments and passing them to the addMessageToDatabase function 
+     * getting the arguments and passing them to the addMessageToConverstaions and addMessageToUnreadMessageTable functions 
      * under the condition that the message has be written and submitted
      * 
      * @return void
@@ -54,7 +120,8 @@
 
         if (isset($_POST['message'])) {
             $message = $_POST['message'];
-            addMessageToDatabase($sender, $receiver, $message);
+            addMessageToConversationTable($sender, $receiver, $message);
+            addMessageToUnreadMessagesTable($sender, $receiver, $message);
         }
     }
 
@@ -235,7 +302,7 @@
 
         setInterval(function(){
             refreshChat();
-        }, 2000);
+        }, 1000);
 
 
     </script>
