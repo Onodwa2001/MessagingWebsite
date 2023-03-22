@@ -50,7 +50,24 @@
     $users = getAllUsers();
     $unread_messages = getAllUnreadMessages();
 
-    $hashTable = array();
+    function unique_multidim_array($array, $key) {
+        $temp_array = array();
+        $i = 0;
+        $key_array = array();
+    
+        if ($array != null) {
+            foreach($array as $val) {
+                if (!in_array($val[$key], $key_array)) {
+                    $key_array[$i] = $val[$key];
+                    $temp_array[$i] = $val;
+                }
+                $i++;
+            }
+        }
+        return $temp_array;
+    }
+
+    $unread_messages_with_no_duplicates = unique_multidim_array($unread_messages, "sender_id");
 
 
 ?>
@@ -183,8 +200,9 @@
             <?php foreach($users as $user) { ?>
                 <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
                     <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp
-                    <?php if ($unread_messages != null) { ?>
-                        <?php foreach ($unread_messages as $message) { ?>
+                    <?php if ($unread_messages_with_no_duplicates != null) { ?>
+                        <?php foreach ($unread_messages_with_no_duplicates as $message) { ?>
+                            <?php // if ($message['sender_id']) ?>
                             <?php if ($message['sender_id'] === $user['username']) { ?>
                                 <?php echo '<span class="message_dot"></span>'; ?>
                             <?php } ?>
