@@ -124,6 +124,21 @@
             border-radius: 50%;
         }
 
+        .navigations {
+            margin-top: 20px;
+        }
+        
+        .navigations button {
+            width: 49%;
+            border: none;
+            padding: 5px;
+            transition: transform 0.2s ease-out;
+        }
+
+        .navigations button:hover {
+            background-color: #b2aeae;
+        }
+
         /* input {
             background-color: white !important;
         } */
@@ -193,23 +208,51 @@
             </span>
         </div>
 
-        <br/>
-        <h5>Users available</h5>
-        <br/>
-        <div class="users" id="users">
-            <?php foreach($users as $user) { ?>
-                <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
-                    <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp
-                    <?php if ($unread_messages_with_no_duplicates != null) { ?>
-                        <?php foreach ($unread_messages_with_no_duplicates as $message) { ?>
-                            <?php // if ($message['sender_id']) ?>
-                            <?php if ($message['sender_id'] === $user['username']) { ?>
-                                <?php echo '<span class="message_dot"></span>'; ?>
+        <div class="navigations">
+            <button id="all-users-btn">All Users</button>
+            <button id="messages-btn">Messages 
+            <?php if (count($unread_messages_with_no_duplicates) > 0) { ?>
+                <span style="background-color: blue; padding: 2.5px 5px 2.5px 5px; border-radius: 50%; color: white;"><?php echo count($unread_messages_with_no_duplicates);?></span></button>
+            <?php } ?>
+        </div>
+
+        <div class="all-users" id="all-users">
+            <br/>
+            <h5>All Users</h5>
+            <br/>
+            <div class="users" id="users">
+                <?php foreach($users as $user) { ?>
+                    <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
+                        <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp
+                        <?php if ($unread_messages_with_no_duplicates != null) { ?>
+                            <?php foreach ($unread_messages_with_no_duplicates as $message) { ?>
+                                <?php if ($message['sender_id'] === $user['username']) { ?>
+                                    <?php echo '<span class="message_dot"></span>'; ?>
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
-                    <?php } ?>
-                </a>
-            <?php } ?>
+                    </a>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="users-who-messaged-you" id="users-who-messaged-you" style="display: none;">
+            <br/>
+            <h5>Messages</h5>
+            <br/>
+            <div class="users2" id="users2">
+                <?php foreach($users as $user) { ?>
+                    <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
+                        <?php if ($unread_messages_with_no_duplicates != null) { ?>
+                            <?php foreach ($unread_messages_with_no_duplicates as $message) { ?>
+                                <?php if ($message['sender_id'] === $user['username']) { ?>
+                                    <i class="fas fa-user"></i>&nbsp&nbsp&nbsp<?php echo $user['name'] . ' &nbsp&nbsp&nbsp&nbsp<span class="message_dot"></span>'; ?>
+                                <?php } ?>
+                            <?php } ?>
+                        <?php } ?>
+                    </a>
+                <?php } ?>
+            </div>
         </div>
     </div>
     
@@ -221,17 +264,32 @@
         document.getElementById('signup').addEventListener('click', (e) => {
             location.href="register.php";
         });
-
-
-
         
         function refresh(){
             $('#users').load(location.href + " #users");
+            $('#users2').load(location.href + " #users2");
+            $('#messages-btn').load(location.href + " #messages-btn");
         }
 
         setInterval(function(){
             refresh();
         }, 1000);
+
+
+        let allUsers = document.getElementById('all-users');
+        let messages = document.getElementById('users-who-messaged-you');
+        let allMessagesBtn = document.getElementById('all-users-btn');
+        let messagesBtn = document.getElementById('messages-btn');
+
+        messagesBtn.addEventListener('click', (e) => {
+            allUsers.style.display = 'none';
+            messages.style.display = 'block';
+        });
+
+        allMessagesBtn.addEventListener('click', (e) => {
+            messages.style.display = 'none';
+            allUsers.style.display = 'block';
+        });
 
     </script>
 
