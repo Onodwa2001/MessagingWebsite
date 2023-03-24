@@ -4,6 +4,51 @@
 
     include('connect.php');
 
+    function getAllFriends() {
+        global $connection;
+
+        $loggedUser = $_SESSION['username'];
+        $sql = "SELECT * FROM friends WHERE friend1='$loggedUser' OR friend2='$loggedUser'";
+
+        $result = mysqli_query($connection, $sql);
+
+        $data = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+
+        return $data;
+    }
+
+    $myFriends = array();
+
+    foreach (getAllFriends() as $friendship) {
+        if ($friendship['friend1'] !== $_SESSION['username']) {
+            array_push($myFriends, $friendship['friend1']);
+        } else if ($friendship['friend2'] !== $_SESSION['username']) {
+            array_push($myFriends, $friendship['friend2']);
+        }
+    }
+
+    function getFriendsRecords($id) {
+        global $connection;
+
+        $sql = "SELECT * FROM users WHERE username = '$id'";
+        $result = mysqli_query($connection, $sql);
+
+        $data = mysqli_fetch_array($result);
+
+        return array('username' => $data['username'], 'name' => $data['name'], 'city' => $data['city']);
+    }
+
+
+    $myFriendsAndRecords = array();
+    
+    foreach ($myFriends as $myFriend) {
+        array_push($myFriendsAndRecords, getFriendsRecords($myFriend));
+    }
+
     function getAllUsers() {
         global $connection;
 
@@ -23,6 +68,7 @@
         }
         return null;
     }
+
 
 
     function getAllUnreadMessages() {
@@ -68,6 +114,7 @@
     }
 
     $unread_messages_with_no_duplicates = unique_multidim_array($unread_messages, "sender_id");
+
 
 
 ?>
@@ -133,6 +180,7 @@
             border: none;
             padding: 5px;
             transition: transform 0.2s ease-out;
+            /* height: 50px; */
         }
 
         .navigations button:hover {
@@ -209,7 +257,7 @@
         </div>
 
         <div class="navigations">
-            <button id="all-users-btn">All Users</button>
+            <button id="all-users-btn">All My Friends</button>
             <button id="messages-btn">Messages 
             <?php if (count($unread_messages_with_no_duplicates) > 0) { ?>
                 <span style="background-color: blue; padding: 2.5px 5px 2.5px 5px; border-radius: 50%; color: white;"><?php echo count($unread_messages_with_no_duplicates);?></span></button>
@@ -218,10 +266,10 @@
 
         <div class="all-users" id="all-users">
             <br/>
-            <h5>All Users</h5>
+            <h5>All My Friends</h5>
             <br/>
             <div class="users" id="users">
-                <?php foreach($users as $user) { ?>
+                <?php foreach($myFriendsAndRecords as $user) { ?>
                     <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
                         <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp
                         <?php if ($unread_messages_with_no_duplicates != null) { ?>
