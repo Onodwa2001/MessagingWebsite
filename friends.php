@@ -70,7 +70,6 @@
     }
 
 
-
     function getAllUnreadMessages() {
         global $connection;
 
@@ -116,6 +115,33 @@
     $unread_messages_with_no_duplicates = unique_multidim_array($unread_messages, "sender_id");
 
 
+    function getAllInvites() {
+        global $connection;
+        $invites = array();
+        $logged_in_user = $_SESSION['username'];
+
+        $sql = "SELECT * FROM invitations WHERE invitee_id='$logged_in_user'";
+
+        $result = mysqli_query($connection, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                $inviter = $row['inviter_id'];
+
+                $sql2 = "SELECT username, name, city FROM users WHERE username='$inviter'";
+
+                $result2 = mysqli_query($connection, $sql2);
+                $data = mysqli_fetch_array($result2);
+
+                array_push($invites, array('username' => $data['username'], 'name' => $data['name'], 'city' => $data['city']));
+            }
+        } else {
+
+        }
+        return $invites;
+    }
+
+    $invites = getAllInvites();
 
 ?>
 
@@ -239,9 +265,13 @@
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="chats">
                     <i class="fa-solid fa-comments"></i>
+                    <?php if ($unread_messages != null) { ?>
+                        <span><?php if (count($unread_messages) > 0) { echo count($unread_messages); } ?></span>
+                    <?php } ?>
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="findfriends">
                     <i class="fa-solid fa-user-group"></i>
+                    <span><?php if (count($invites) > 0) { echo count($invites); } ?></span>
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="login">
                     <i class="fa-solid fa-right-to-bracket"></i>
@@ -262,12 +292,14 @@
     <h1>Find someone to talk to</h1>
     
     <div class="users-wrap">
-        <div class="input-group rounded search-bar">
-            <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-            <span class="input-group-text border-0" id="search-addon">
-                <button type="button" class="btn btn-primary"><i class="fas fa-search"></i></button>
-            </span>
-        </div>
+        <form action="" method="POST">
+            <div class="input-group rounded search-bar">
+                <input type="search" name="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                <span class="input-group-text border-0" id="search-addon">
+                    <button type="submit" class="btn btn-primary" name="searchButton"><i class="fas fa-search"></i></button>
+                </span>
+            </div>
+        </form>
 
         <div class="navigations">
             <button id="all-users-btn">All My Friends</button>
@@ -282,6 +314,7 @@
             <h5>All My Friends</h5>
             <br/>
             <div class="users" id="users">
+
                 <?php foreach($myFriendsAndRecords as $user) { ?>
                     <a href="chatroom.php?id=<?php echo $user['username'];?>" style="display: flex;">
                         <i class="fas fa-user"></i><p style="margin-left: 10px;"><?php echo $user['name']; ?></p> &nbsp&nbsp

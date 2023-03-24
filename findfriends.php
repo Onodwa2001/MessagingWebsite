@@ -202,6 +202,30 @@
         $users = searchForUsers($searchValue);
     }
 
+    function getAllUnreadMessages() {
+        global $connection;
+
+        $current_logged_in_user = $_SESSION['username'];
+
+        $sql = "SELECT * FROM unread_messages WHERE receiver_id='$current_logged_in_user'";
+        $result = mysqli_query($connection, $sql);
+
+        if (mysqli_num_rows($result) > 0) {
+            $unread_messages = array();
+
+            while($row = mysqli_fetch_assoc($result)) {
+                array_push($unread_messages, array('message' => $row["message"], 'sender_id' => $row['sender_id'], 'receiver_id' => $row['receiver_id']));
+            }
+
+            return $unread_messages;
+        } else {
+            echo "";
+        }
+        return null;
+    }
+
+    $unread_messages = getAllUnreadMessages();
+
 ?>
 
 <!DOCTYPE html>
@@ -374,9 +398,13 @@
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="chats">
                     <i class="fa-solid fa-comments"></i>
+                    <?php if ($unread_messages != null) { ?>
+                        <span><?php if (count($unread_messages) > 0) { echo count($unread_messages); } ?></span>
+                    <?php } ?>
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="findfriends">
                     <i class="fa-solid fa-user-group"></i>
+                    <span><?php if (count($invites) > 0) { echo count($invites); } ?></span>
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="login">
                     <i class="fa-solid fa-right-to-bracket"></i>

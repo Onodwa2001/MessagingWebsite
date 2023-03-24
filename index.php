@@ -72,7 +72,7 @@
                     $_SESSION['username'] = $creds['username'];
                     $_SESSION['name'] = $creds['name'];
 
-                    header('Location: findfriends.php');
+                    header('Location: friends.php');
                 }
             }
             
