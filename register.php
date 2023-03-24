@@ -16,7 +16,7 @@
         include('./encryption.php');
         $encrypted_password = encrypt($password);
 
-        $sqlquery = "INSERT INTO users VALUES ('$username', '$name', '$encrypted_password')";
+        $sqlquery = "INSERT INTO users(username, name, password) VALUES ('$username', '$name', '$encrypted_password')";
  
         global $connection;
 
@@ -27,6 +27,8 @@
                 return "This username is taken";
             }
         } catch (Exception $e) {
+            echo 'error: ' . mysqli_error($connection);
+
             return '<p style="color: red; text-align: center;">This username is taken</p>';
         }
         

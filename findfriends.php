@@ -179,6 +179,29 @@
         array_push($requested, $request['username']);
     }
 
+    function searchForUsers($searchValue) {
+
+        global $connection;
+
+        $sql = "SELECT * FROM users WHERE name LIKE '%" . $searchValue . "%' OR username LIKE '&" . $searchValue . "&'";
+
+        $result = mysqli_query($connection, $sql);
+
+        $data = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($data, $row);
+        }
+
+        return $data;
+
+    }
+
+    if (isset($_POST['searchButton'])) {
+        $searchValue = $_POST['search'];
+        $users = searchForUsers($searchValue);
+    }
+
 ?>
 
 <!DOCTYPE html>
@@ -210,11 +233,19 @@
         #search {
             width: fit-content;
             margin: 40px auto 0 auto;
+            display: flex;
         }
 
         #search button {
             border: none;
             padding: 5px 15px 5px 15px;
+            margin-left: 5px;
+        }
+
+        #search input {
+            padding: 4px;
+            padding-left: 8px;
+            /* border: none; */
         }
 
         .person {
@@ -292,6 +323,10 @@
             color: black;
         }
 
+        .nav-links i {
+            font-size: 14px;
+        }
+
 
     </style>
 
@@ -333,9 +368,18 @@
             </ul>
             <!-- Left links -->
 
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center nav-links">
+                <button type="button" class="btn btn-link px-3 me-2" id="profile">
+                    <i class="fa-solid fa-user"></i>
+                </button>
+                <button type="button" class="btn btn-link px-3 me-2" id="chats">
+                    <i class="fa-solid fa-comments"></i>
+                </button>
+                <button type="button" class="btn btn-link px-3 me-2" id="findfriends">
+                    <i class="fa-solid fa-user-group"></i>
+                </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="login">
-                Login
+                    <i class="fa-solid fa-right-to-bracket"></i>
                 </button>
                 <button type="button" class="btn btn-primary me-3" id="signup">
                 Sign up
@@ -350,10 +394,12 @@
     <!-- Navbar -->
 
 
-    <div class="search" id="search">
-        <input name="search" placeholder="Find someone to add" />
-        <button type="submit">Search</button>
-    </div>
+    <form action="" method="POST" >
+        <div class="search" id="search">
+            <input name="search" placeholder="Find someone to add" class="form-control" />
+            <button type="submit" name="searchButton">Search</button>
+        </div>
+    </form>
 
     <br>
     <div class="container">
@@ -422,6 +468,18 @@
 
         document.getElementById('signup').addEventListener('click', (e) => {
             location.href="register.php";
+        });
+
+        document.getElementById('findfriends').addEventListener('click', (e) => {
+            location.href="findfriends.php";
+        });
+
+        document.getElementById('chats').addEventListener('click', (e) => {
+            location.href="friends.php";
+        });
+        
+        document.getElementById('profile').addEventListener('click', (e) => {
+            location.href="profile.php";
         });
     </script>
 

@@ -187,6 +187,10 @@
             background-color: #b2aeae;
         }
 
+        .nav-links i {
+            font-size: 14px;
+        }
+
         /* input {
             background-color: white !important;
         } */
@@ -229,9 +233,18 @@
             </ul>
             <!-- Left links -->
 
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center nav-links">
+                <button type="button" class="btn btn-link px-3 me-2" id="chats">
+                    <i class="fa-solid fa-user"></i>
+                </button>
+                <button type="button" class="btn btn-link px-3 me-2" id="chats">
+                    <i class="fa-solid fa-comments"></i>
+                </button>
+                <button type="button" class="btn btn-link px-3 me-2" id="findfriends">
+                    <i class="fa-solid fa-user-group"></i>
+                </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="login">
-                Login
+                    <i class="fa-solid fa-right-to-bracket"></i>
                 </button>
                 <button type="button" class="btn btn-primary me-3" id="signup">
                 Sign up
@@ -311,6 +324,14 @@
 
         document.getElementById('signup').addEventListener('click', (e) => {
             location.href="register.php";
+        });
+
+        document.getElementById('findfriends').addEventListener('click', (e) => {
+            location.href="findfriends.php";
+        });
+
+        document.getElementById('chats').addEventListener('click', (e) => {
+            location.href="friends.php";
         });
         
         function refresh(){
