@@ -447,7 +447,7 @@
 
                             <?php if ($user['username'] === $_SESSION['username']) { ?>
 
-                                <button onclick="window.location.href='profle.php'">View Profile</button>
+                                <button onclick="window.location.href='profile.php'">View Profile</button>
 
                             <?php } else if (in_array($user['username'], $requested)) { ?>
                                 <form action="findfriends.php" method="POST" id="inviteForm">

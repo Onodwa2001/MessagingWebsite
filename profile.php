@@ -67,7 +67,6 @@
             echo 'That is not png nor jpeg/jpg';
         }
         
-        // process the uploaded file as needed
     }
 
 

@@ -26,17 +26,15 @@
             }
 
             return $unread_messages;
-        } else {
-            echo "No users yet, start a conversation";
-        }
+        } 
         return null;
     }
 
+    $receiver_records = array();
     if (isset($_GET['id'])) {
         $receiver = $_GET['id']; // this value will vary depending on who the sender clicks on
 
         $unread_messages = getAllUnreadMessages();
-
 
         if ($unread_messages != null) {
             foreach ($unread_messages as $message) {
@@ -56,7 +54,20 @@
                 }
             }
         }
-        
+
+        function getRecordsOfReceiver($receiver) {
+            global $connection;
+    
+            $sql = "SELECT * FROM users WHERE username = '$receiver'";
+    
+            $result = mysqli_query($connection, $sql);
+            $data = mysqli_fetch_array($result);
+    
+            return array('image' => $data['image'], 'username' => $data['username'], 'name' => $data['name'], 'city' => $data['city']);
+        }
+    
+        $receiver_records = getRecordsOfReceiver($receiver);
+        // echo $receiver_records['username'];
     }
 
     /**
@@ -169,6 +180,10 @@
             padding: 0;
         }
 
+        body {
+
+        }
+
         .message {
             background-color: rgb(246, 239, 239);
             max-width: 60%;
@@ -179,7 +194,7 @@
             /* color: white; */
         }
 
-        .messages::-webkit-scrollbar {
+        .chat-space::-webkit-scrollbar {
             display: none;
         }
 
@@ -208,18 +223,25 @@
             margin: auto auto;
         }
 
-        .chat-wrap h3 {
-            background-color: #3b71ca;
-            color: white;
-            padding: 10px;
-        }
-
         .chat_space {
             height: 500px;
             overflow-y: scroll;
             /* transform: scaleY(-1);  */
             display: flex;
             flex-direction: column-reverse;
+        }
+
+        .topbar {
+            display: flex;
+            background-color: #3b71ca;
+            padding: 5px;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .topbar h3 {
+            margin-top: 15px;
+            margin-left: 10px;
         }
 
         #messageFrom {
@@ -252,9 +274,15 @@
 <body onload="refreshChat();">
     
 
-    <p style="text-align: center; background-color: #3b71ca; width: fit-content; margin: 10px auto 10px auto; padding: 10px;"><a href="friends.php" style="color: white; text-decoration: none">Back</a></p>
+    <p style="text-align: center; background-color: #3b71ca; width: fit-content; margin: 10px auto 10px auto; padding: 10px; border-radius: 8px;"><a href="friends.php" style="color: white; text-decoration: none">Back</a></p>
     <div class="chat-wrap">
-        <h3><?php echo $receiver; ?></h3>
+        <div class="topbar">
+            <div class="image">
+                <img src="uploads/6522516.png" alt="profile picture" height="50px" width="50px" />
+            </div>
+            <h3><?php echo $receiver; ?></h3>
+        </div>
+        
         <div id="chat_space" class="chat_space">
             <div class="messages" id="messages">
 
