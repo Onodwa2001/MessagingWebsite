@@ -68,6 +68,7 @@
     
         $receiver_records = getRecordsOfReceiver($receiver);
         // echo $receiver_records['username'];
+
     }
 
     /**
@@ -234,7 +235,7 @@
         .topbar {
             display: flex;
             background-color: #3b71ca;
-            padding: 5px;
+            padding: 10px;
             color: white;
             border-radius: 8px;
         }
@@ -265,6 +266,17 @@
         #messageFrom button:hover {
             cursor: pointer;
         }
+
+        .image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .image img {
+            object-fit: cover;
+            border-radius: 50%;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -278,7 +290,7 @@
     <div class="chat-wrap">
         <div class="topbar">
             <div class="image">
-                <img src="uploads/6522516.png" alt="profile picture" height="50px" width="50px" />
+                <img src="uploads/<?php echo $receiver_records['image'] === '' ? '6522516.png' : $receiver_records['image']; ?>" alt="profile picture" height="50px" width="50px" />
             </div>
             <h3><?php echo $receiver; ?></h3>
         </div>
