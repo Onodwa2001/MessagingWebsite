@@ -288,12 +288,14 @@
 
     <p style="text-align: center; background-color: #3b71ca; width: fit-content; margin: 10px auto 10px auto; padding: 10px; border-radius: 8px;"><a href="friends.php" style="color: white; text-decoration: none">Back</a></p>
     <div class="chat-wrap">
-        <div class="topbar">
-            <div class="image">
-                <img src="uploads/<?php echo $receiver_records['image'] === '' ? '6522516.png' : $receiver_records['image']; ?>" alt="profile picture" height="50px" width="50px" />
+        <a href="details.php?id=<?php echo $receiver_records['username']; ?>">
+            <div class="topbar">
+                <div class="image">
+                    <img src="uploads/<?php echo $receiver_records['image'] === '' ? '6522516.png' : $receiver_records['image']; ?>" alt="profile picture" height="50px" width="50px" />
+                </div>
+                <h3><?php echo $receiver; ?></h3>
             </div>
-            <h3><?php echo $receiver; ?></h3>
-        </div>
+        </a>
         
         <div id="chat_space" class="chat_space">
             <div class="messages" id="messages">

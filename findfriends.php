@@ -323,6 +323,7 @@
 
         .image img {
             border-radius: 50%;
+            object-fit: cover;
         }
 
         .invite {
@@ -439,7 +440,7 @@
                             <img src="uploads/<?php echo $user['image'] === '' ? '6522516.png' : $user['image']; ?>" alt="user-image" height="100%" width="100%" />
                         </div>
                         <div class="info">
-                            <h1><?php echo $user['name']; ?></h1>
+                            <a href="details.php?id=<?php echo $user['username']; ?>"><h1><?php echo $user['name']; ?></h1></a>
                             <div>Lives in <?php echo $user['city']; ?></div>
                             <!-- <div>100 friends</div> -->
                         </div>
