@@ -205,7 +205,7 @@
         <!-- Container wrapper -->
         <div class="container">
             <!-- Navbar brand -->
-            <a class="navbar-brand me-2" href="users.php">
+            <a class="navbar-brand me-2" href="friends.php">
             <i class="fa-solid fa-message"></i>
             &nbsp&nbsp<span style="font-size: 15px;">Welcome <?php echo $_SESSION['username']; ?></span>
             </a>
@@ -234,7 +234,7 @@
             <!-- Left links -->
 
             <div class="d-flex align-items-center nav-links">
-                <button type="button" class="btn btn-link px-3 me-2" id="chats">
+                <button type="button" class="btn btn-link px-3 me-2" id="profile">
                     <i class="fa-solid fa-user"></i>
                 </button>
                 <button type="button" class="btn btn-link px-3 me-2" id="chats">
@@ -332,6 +332,10 @@
 
         document.getElementById('chats').addEventListener('click', (e) => {
             location.href="friends.php";
+        });
+
+        document.getElementById('profile').addEventListener('click', (e) => {
+            location.href="profile.php";
         });
         
         function refresh(){

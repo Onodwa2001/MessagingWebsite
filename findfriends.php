@@ -14,7 +14,7 @@
             $users = array();
 
             while($row = mysqli_fetch_assoc($result)) {
-                array_push($users, array('username' => $row["username"], 'name' => $row['name'], 'city' => $row['city']));
+                array_push($users, array('image' => $row['image'], 'username' => $row["username"], 'name' => $row['name'], 'city' => $row['city']));
             }
 
             return $users;
@@ -340,7 +340,7 @@
         <!-- Container wrapper -->
         <div class="container">
             <!-- Navbar brand -->
-            <a class="navbar-brand me-2" href="users.php">
+            <a class="navbar-brand me-2" href="friends.php">
             <i class="fa-solid fa-message"></i>
             &nbsp&nbsp<span style="font-size: 15px;">Welcome <?php echo $_SESSION['username']; ?></span>
             </a>
@@ -406,35 +406,36 @@
         <div class="friends-to-find">
             <?php foreach($users as $user) { ?>
                 <!-- <a href="#" class="users-link"> -->
-                    <?php if ($user['username'] != $_SESSION['username']) { ?>
-                        <div class="person">
-                            <div class="image">
-                                <img src="images/thumbnail.png" alt="user-image" height="100%" width="100%" />
-                            </div>
-                            <div class="info">
-                                <h1><?php echo $user['name']; ?></h1>
-                                <div>Lives in <?php echo $user['city']; ?></div>
-                                <!-- <div>100 friends</div> -->
-                            </div>
-                            <div class="buttons" style="z-index: 1;">
-
-                                <?php if (in_array($user['username'], $requested)) { ?>
-                                    <form action="findfriends.php" method="POST" id="inviteForm">
-                                        <button style="opacity: .7;" name="invite" value="<?php echo $user['username']; ?>" disabled>Pending invite</button>
-                                    </form>
-                                <?php } else if (!in_array($user['username'], $myFriends)) { ?>
-                                    <form action="findfriends.php" method="POST" id="inviteForm">
-                                        <button name="invite" value="<?php echo $user['username']; ?>">Invite</button>
-                                    </form>
-                                <?php } else { ?>
-                                    <button id="messageButton" onclick="window.location.href='chatroom.php?id=<?php echo $user['username']; ?>';" name="message" value="<?php echo $user['username']; ?>">Message</button>
-                                <?php } ?>
-
-                                
-
-                            </div>
+                    <div class="person">
+                        <div class="image">
+                            <img src="uploads/<?php echo $user['image'] === '' ? '6522516.png' : $user['image']; ?>" alt="user-image" height="100%" width="100%" />
                         </div>
-                    <?php } ?>
+                        <div class="info">
+                            <h1><?php echo $user['name']; ?></h1>
+                            <div>Lives in <?php echo $user['city']; ?></div>
+                            <!-- <div>100 friends</div> -->
+                        </div>
+                        <div class="buttons" style="z-index: 1;">
+
+                            <?php if ($user['username'] === $_SESSION['username']) { ?>
+
+                                <button onclick="window.location.href='profle.php'">View Profile</button>
+
+                            <?php } else if (in_array($user['username'], $requested)) { ?>
+                                <form action="findfriends.php" method="POST" id="inviteForm">
+                                    <button style="opacity: .7;" name="invite" value="<?php echo $user['username']; ?>" disabled>Pending invite</button>
+                                </form>
+                            <?php } else if (!in_array($user['username'], $myFriends)) { ?>
+                                <form action="findfriends.php" method="POST" id="inviteForm">
+                                    <button name="invite" value="<?php echo $user['username']; ?>">Invite</button>
+                                </form>
+                            <?php } else { ?>
+                                <button id="messageButton" onclick="window.location.href='chatroom.php?id=<?php echo $user['username']; ?>';" name="message" value="<?php echo $user['username']; ?>">Message</button>
+                            <?php } ?>
+
+                            
+                        </div>
+                    </div>
                     
                 <!-- </a> -->
             <?php } ?>   
